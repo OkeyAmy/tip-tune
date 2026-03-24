@@ -67,7 +67,7 @@ const ORDERED_STEPS: Array<Exclude<GiftTipStep, 'loading' | 'success'>> = [
 
 /* ─── Component ──────────────────────────────────────────────────────────── */
 
-const GiftTipModal: React.FC<GiftTipModalProps> = ({
+const GiftTipModal = React.forwardRef<HTMLDivElement, GiftTipModalProps>(({
   isOpen,
   onClose,
   artistId,
@@ -77,7 +77,7 @@ const GiftTipModal: React.FC<GiftTipModalProps> = ({
   walletBalance = { xlm: 1000, usdc: 100 },
   xlmUsdRate = 0.11,
   trackId,
-}: GiftTipModalProps) => {
+}, ref) => {
   const reducedMotion = useReducedMotion();
 
   /* ── State ── */
@@ -93,7 +93,8 @@ const GiftTipModal: React.FC<GiftTipModalProps> = ({
   const [copiedLink, setCopiedLink] = useState(false);
   const [processingPhase, setProcessingPhase] = useState<ProcessingPhase>('idle');
   const { announce } = useLiveRegion();
-  const sheetRef = React.useRef<HTMLDivElement>(null);
+  const internalRef = React.useRef<HTMLDivElement>(null);
+  const sheetRef = (ref as React.RefObject<HTMLDivElement>) || internalRef;
 
   /* ── Reset state on close ── */
   const resetState = useCallback(() => {
@@ -515,7 +516,7 @@ const GiftTipModal: React.FC<GiftTipModalProps> = ({
       </animated.div>
     </animated.div>
   );
-};
+});
 
 /* ─── Helper sub-components ──────────────────────────────────────────────── */
 
